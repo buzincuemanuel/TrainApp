@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +35,7 @@ public class TrainSchedule {
 
     @Column(nullable = false)
     private Integer delayMinutes = 0;
+
+    @OneToMany(mappedBy = "trainSchedule")
+    private List<Booking> bookings = new ArrayList<>();
 }
