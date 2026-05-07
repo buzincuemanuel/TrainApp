@@ -3,7 +3,6 @@ package com.buzincuemanuel.trainapp.service;
 
 import com.buzincuemanuel.trainapp.model.Train;
 import com.buzincuemanuel.trainapp.repository.TrainRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class TrainService {
 
