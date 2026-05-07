@@ -30,4 +30,7 @@ public class TrainSchedule {
 
     @Column(nullable = false)
     private LocalTime departureTime;
+
+    @Column(nullable = false)
+    private Integer delayMinutes = 0;
 }
