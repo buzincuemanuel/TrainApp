@@ -11,13 +11,17 @@
         <a class="navbar-brand" href="/admin/schedules">Admin Panel</a>
         <div class="navbar-nav d-flex flex-row">
             <a class="nav-link me-3" href="/admin/trains">Trains</a>
-            <a class="nav-link me-3" href="/admin/routes">Routes</a>
+            <a class="nav-link me-3 active" href="/admin/routes">Routes</a>
             <a class="nav-link" href="/admin/schedules">Schedules</a>
         </div>
     </div>
 </nav>
 
 <div class="container">
+    <div th:if="${param.success}" class="alert alert-success mb-4">Route saved successfully!</div>
+    <div th:if="${param.updated}" class="alert alert-info mb-4">Route updated successfully!</div>
+    <div th:if="${param.deleted}" class="alert alert-warning mb-4">Route deleted!</div>
+
     <div class="row">
         <div class="col-md-4">
             <div class="card shadow-sm">
@@ -47,8 +51,10 @@
                         <tr th:each="route : ${routes}">
                             <td th:text="${route.name}"></td>
                             <td class="d-flex">
+                                <a th:href="@{/admin/routes/{id}/stops(id=${route.id})}" class="btn btn-sm btn-secondary me-2">Manage Stops</a>
+
                                 <a th:href="@{/admin/routes/{id}/edit(id=${route.id})}" class="btn btn-sm btn-info me-2">Edit</a>
-                                <form th:action="@{/admin/routes/{id}/delete(id=${route.id})}" method="post" onsubmit="return confirm('Delete route?');">
+                                <form th:action="@{/admin/routes/{id}/delete(id=${route.id})}" method="post" onsubmit="return confirm('Delete route? This will also delete all stops on it.');">
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                 </form>
                             </td>

@@ -2,10 +2,15 @@ package com.buzincuemanuel.trainapp.controller;
 
 import com.buzincuemanuel.trainapp.dto.DelayDto;
 import com.buzincuemanuel.trainapp.dto.RouteDto;
+import com.buzincuemanuel.trainapp.dto.RouteStopDto;
 import com.buzincuemanuel.trainapp.dto.TrainDto;
 import com.buzincuemanuel.trainapp.model.Route;
+import com.buzincuemanuel.trainapp.model.RouteStop;
+import com.buzincuemanuel.trainapp.model.Station;
 import com.buzincuemanuel.trainapp.model.Train;
 import com.buzincuemanuel.trainapp.service.RouteService;
+import com.buzincuemanuel.trainapp.service.RouteStopService;
+import com.buzincuemanuel.trainapp.service.StationService;
 import com.buzincuemanuel.trainapp.service.TrainScheduleService;
 import com.buzincuemanuel.trainapp.service.TrainService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -23,6 +31,8 @@ public class AdminController {
     private final TrainService trainService;
     private final RouteService routeService;
     private final TrainScheduleService trainScheduleService;
+    private final StationService stationService;
+    private final RouteStopService routeStopService;
 
     @GetMapping("/trains")
     public String manageTrains(Model model) {
@@ -62,7 +72,7 @@ public class AdminController {
     @PostMapping("/trains/{id}/edit")
     public String editTrain(@PathVariable Long id, @ModelAttribute TrainDto form) {
         Train train = trainService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid train id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Train not found"));
         train.setName(form.getName());
         train.setCapacity(form.getCapacity());
         trainService.save(train);
@@ -105,12 +115,51 @@ public class AdminController {
     @PostMapping("/routes/{id}/edit")
     public String editRoute(@PathVariable Long id, @ModelAttribute RouteDto form) {
         Route route = routeService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid route id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Route not found"));
         route.setName(form.getName());
         routeService.save(route);
         return "redirect:/admin/routes?updated=true";
     }
 
+    @GetMapping("/routes/{id}/stops")
+    public String manageRouteStops(@PathVariable Long id, Model model) {
+        Route route = routeService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid route id: " + id));
+        List<RouteStop> sortedStops = route.getStops().stream()
+                .sorted(Comparator.comparing(RouteStop::getStopOrder))
+                .toList();
+
+        model.addAttribute("route", route);
+        model.addAttribute("sortedStops", sortedStops);
+        model.addAttribute("stations", stationService.findAll());
+        model.addAttribute("stopForm", new RouteStopDto());
+
+        return "admin/route-stops";
+    }
+
+    @PostMapping("/routes/{id}/stops")
+    public String addRouteStop(@PathVariable Long id, @ModelAttribute RouteStopDto form) {
+        Route route = routeService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid route id: " + id));
+        Station station = stationService.findById(form.getStationId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid station id"));
+
+        RouteStop stop = RouteStop.builder()
+                .route(route)
+                .station(station)
+                .stopOrder(form.getStopOrder())
+                .minutesFromStart(form.getMinutesFromStart())
+                .build();
+
+        routeStopService.save(stop);
+        return "redirect:/admin/routes/" + id + "/stops?success=true";
+    }
+
+    @PostMapping("/routes/{routeId}/stops/{stopId}/delete")
+    public String deleteRouteStop(@PathVariable Long routeId, @PathVariable Long stopId) {
+        routeStopService.deleteById(stopId);
+        return "redirect:/admin/routes/" + routeId + "/stops?deleted=true";
+    }
 
     @GetMapping("/schedules")
     public String manageSchedules(Model model) {

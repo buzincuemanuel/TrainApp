@@ -1,14 +1,15 @@
-INSERT INTO stations (id, name) VALUES (1, 'Cluj-Napoca');
-INSERT INTO stations (id, name) VALUES (2, 'Alba Iulia');
-INSERT INTO stations (id, name) VALUES (3, 'Sibiu');
-INSERT INTO stations (id, name) VALUES (4, 'Brasov');
-INSERT INTO stations (id, name) VALUES (5, 'Bucuresti');
 
-INSERT INTO trains (id, name, capacity) VALUES (1, 'IR 1734', 150);
-INSERT INTO trains (id, name, capacity) VALUES (2, 'R 2501', 80);
+INSERT INTO stations (name) VALUES ('Cluj-Napoca');
+INSERT INTO stations (name) VALUES ('Alba Iulia');
+INSERT INTO stations (name) VALUES ('Sibiu');
+INSERT INTO stations (name) VALUES ('Brasov');
+INSERT INTO stations (name) VALUES ('Bucuresti');
 
-INSERT INTO routes (id, name) VALUES (1, 'Cluj -> Bucuresti (via Sibiu)');
-INSERT INTO routes (id, name) VALUES (2, 'Brasov -> Bucuresti (Direct)');
+INSERT INTO trains (name, capacity) VALUES ('IR 1734', 150);
+INSERT INTO trains (name, capacity) VALUES ('R 2501', 80);
+
+INSERT INTO routes (name) VALUES ('Cluj -> Bucuresti (via Sibiu)');
+INSERT INTO routes (name) VALUES ('Brasov -> Bucuresti (Direct)');
 
 INSERT INTO route_stops (route_id, station_id, stop_order, minutes_from_start) VALUES (1, 1, 1, 0);
 INSERT INTO route_stops (route_id, station_id, stop_order, minutes_from_start) VALUES (1, 2, 2, 120);
@@ -20,7 +21,6 @@ INSERT INTO route_stops (route_id, station_id, stop_order, minutes_from_start) V
 INSERT INTO route_stops (route_id, station_id, stop_order, minutes_from_start) VALUES (2, 5, 2, 150);
 
 INSERT INTO train_schedules (train_id, route_id, departure_time, delay_minutes) VALUES (1, 1, '08:00:00', 0);
-
 INSERT INTO train_schedules (train_id, route_id, departure_time, delay_minutes) VALUES (2, 2, '14:00:00', 0);
 
 INSERT INTO users (name, email, password, role) VALUES
@@ -28,3 +28,5 @@ INSERT INTO users (name, email, password, role) VALUES
 
 INSERT INTO users (name, email, password, role) VALUES
     ('Ion Popescu', 'ion@trainapp.com', '$2a$10$jyS1/n/l8xHaeDzs.ub.8.ufW5hyAVUZvzx.YxPebACF4lhDAogz.', 'USER');
+
+ALTER SEQUENCE IF EXISTS station_seq RESTART WITH 10;
