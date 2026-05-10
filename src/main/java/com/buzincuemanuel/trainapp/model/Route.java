@@ -25,4 +25,5 @@ public class Route {
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<RouteStop> stops = new ArrayList<>();
+
 }
