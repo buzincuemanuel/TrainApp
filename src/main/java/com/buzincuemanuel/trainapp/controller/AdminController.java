@@ -61,11 +61,11 @@ public class AdminController {
 
     @PostMapping("/trains/{id}/edit")
     public String editTrain(@PathVariable Long id, @ModelAttribute TrainDto form) {
-        Train train = Train.builder()
-                .name(form.getName())
-                .capacity(form.getCapacity())
-                .build();
-        trainService.update(id, train);
+        Train train = trainService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid train id: " + id));
+        train.setName(form.getName());
+        train.setCapacity(form.getCapacity());
+        trainService.save(train);
         return "redirect:/admin/trains?updated=true";
     }
 
@@ -104,10 +104,10 @@ public class AdminController {
 
     @PostMapping("/routes/{id}/edit")
     public String editRoute(@PathVariable Long id, @ModelAttribute RouteDto form) {
-        Route route = Route.builder()
-                .name(form.getName())
-                .build();
-        routeService.update(id, route);
+        Route route = routeService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid route id: " + id));
+        route.setName(form.getName());
+        routeService.save(route);
         return "redirect:/admin/routes?updated=true";
     }
 
