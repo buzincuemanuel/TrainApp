@@ -38,4 +38,18 @@ public class TrainSchedule {
 
     @OneToMany(mappedBy = "trainSchedule")
     private List<Booking> bookings = new ArrayList<>();
+
+    public LocalTime getArrivalTimeAt(String stationName) {
+        return route.getStops().stream()
+                .filter(stop -> stop.getStation().getName().equals(stationName))
+                .findFirst()
+                .map(stop -> departureTime
+                        .plusMinutes(stop.getMinutesFromStart())
+                        .plusMinutes(delayMinutes))
+                .orElseThrow(() -> new RuntimeException("Station " + stationName + " not found in route"));
+    }
+
+    public LocalTime getDepartureTimeAt(String stationName) {
+        return getArrivalTimeAt(stationName);
+    }
 }
