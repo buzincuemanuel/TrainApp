@@ -14,20 +14,24 @@ public class NotificationService {
     private final JavaMailSender mailSender;
 
     public void sendBookingConfirmation(Booking booking) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(booking.getUser().getEmail());
-        message.setSubject("Booking Confirmation - " + booking.getTrainSchedule().getTrain().getName());
-        message.setText(
-                "Dear " + booking.getUser().getName() + ",\n\n" +
-                        "Your booking has been confirmed.\n" +
-                        "Train: " + booking.getTrainSchedule().getTrain().getName() + "\n" +
-                        "From: " + booking.getFromStation() + "\n" +
-                        "To: " + booking.getToStation() + "\n" +
-                        "Seats booked: " + booking.getNumberOfSeats() + "\n" +
-                        "Departure time: " + booking.getTrainSchedule().getDepartureTime() + "\n\n" +
-                        "Thank you for choosing our service!"
-        );
-        mailSender.send(message);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(booking.getUser().getEmail());
+            message.setSubject("Booking Confirmation - " + booking.getTrainSchedule().getTrain().getName());
+            message.setText(
+                    "Dear " + booking.getUser().getName() + ",\n\n" +
+                            "Your booking has been confirmed.\n" +
+                            "Train: " + booking.getTrainSchedule().getTrain().getName() + "\n" +
+                            "From: " + booking.getFromStation() + "\n" +
+                            "To: " + booking.getToStation() + "\n" +
+                            "Seats booked: " + booking.getNumberOfSeats() + "\n" +
+                            "Departure time: " + booking.getTrainSchedule().getDepartureTime() + "\n\n" +
+                            "Thank you for choosing our service!"
+            );
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Could not send email: " + e.getMessage());
+        }
     }
 
     public void sendDelayNotification(TrainSchedule trainSchedule, Integer delayMinutes) {
