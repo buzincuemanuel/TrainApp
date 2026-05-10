@@ -23,8 +23,8 @@ INSERT INTO train_schedules (train_id, route_id, departure_time, delay_minutes) 
 
 INSERT INTO train_schedules (train_id, route_id, departure_time, delay_minutes) VALUES (2, 2, '14:00:00', 0);
 
-INSERT INTO users (name, email, password, role) VALUES
-    ('Admin User', 'admin@trainapp.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lHHi', 'ADMIN');
 
+INSERT INTO users (name, email, password, role) VALUES
+    ('Admin TrainApp', 'admin@trainapp.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lHHi', 'ADMIN');
 INSERT INTO users (name, email, password, role) VALUES
     ('Ion Popescu', 'ion@trainapp.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lHHi', 'USER');
