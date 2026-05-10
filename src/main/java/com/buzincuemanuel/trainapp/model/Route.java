@@ -26,6 +26,7 @@ public class Route {
     private String name;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<RouteStop> stops = new ArrayList<>();
 
     public boolean containsStation(String stationName) {

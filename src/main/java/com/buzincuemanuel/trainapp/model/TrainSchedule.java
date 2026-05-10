@@ -34,9 +34,11 @@ public class TrainSchedule {
     private LocalTime departureTime;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer delayMinutes = 0;
 
     @OneToMany(mappedBy = "trainSchedule")
+    @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
     public LocalTime getArrivalTimeAt(String stationName) {
