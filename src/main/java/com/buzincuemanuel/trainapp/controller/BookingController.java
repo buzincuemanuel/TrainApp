@@ -79,4 +79,17 @@ public class BookingController {
             return "book";
         }
     }
+
+    @PostMapping("/my-bookings/cancel/{id}")
+    public String cancelBooking(@PathVariable Long id, Principal principal) {
+        Booking booking = bookingService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        if (!booking.getUser().getEmail().equals(principal.getName())) {
+            return "redirect:/my-bookings?error=unauthorized";
+        }
+
+        bookingService.cancelBooking(id);
+        return "redirect:/my-bookings?cancelled=true";
+    }
 }
