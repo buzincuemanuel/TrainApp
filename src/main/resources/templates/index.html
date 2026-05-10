@@ -11,6 +11,10 @@
     <div class="container">
         <a class="navbar-brand" href="/">TrainApp</a>
         <div class="d-flex align-items-center">
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/schedules}" class="btn btn-warning fw-bold me-3">
+                Admin Panel
+            </a>
+
             <a sec:authorize="isAuthenticated()" th:href="@{/my-bookings}" class="btn btn-outline-light me-3">
                 My Bookings
             </a>
