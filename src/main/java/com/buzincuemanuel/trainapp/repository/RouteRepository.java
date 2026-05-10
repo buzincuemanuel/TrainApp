@@ -21,4 +21,6 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
             @Param("departureStation") String departureStation,
             @Param("arrivalStation") String arrivalStation
     );
+    @Query("SELECT r FROM Route r JOIN r.stops rs WHERE rs.station.name = :stationName")
+    List<Route> findRoutesPassingThroughStation(@Param("stationName") String stationName);
 }
