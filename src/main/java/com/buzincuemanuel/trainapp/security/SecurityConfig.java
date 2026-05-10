@@ -7,9 +7,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
@@ -19,15 +23,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/search", "/login", "/register", "/css/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/book/**", "/my-bookings/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler(myAuthenticationSuccessHandler()) // Înlocuim defaultSuccessUrl
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -36,6 +38,19 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+        return (request, response, authentication) -> {
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+            if (roles.contains("ROLE_ADMIN")) {
+                response.sendRedirect("/admin/schedules");
+            } else {
+                response.sendRedirect("/");
+            }
+        };
     }
 
     @Bean
